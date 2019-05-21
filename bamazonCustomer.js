@@ -18,14 +18,14 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     // console.log("connected as id " + connection.threadId);
-    console.log("WELCOME TO BAMAZON!");
-    console.log("Here's a list of available items...");
+    console.log("\n" + "WELCOME TO BAMAZON!");
     queryAllProducts();
-    console.log("now on to the purchase");
-    makePurchase();
+    // console.log("now on to the purchase");
+    // makePurchase();
 });
 
 function queryAllProducts() {
+    console.log("Here's a list of available items..." + "\n");
     connection.query("SELECT * FROM products", function (err, res) {
         for (var i = 0; i < res.length; i++) {
             console.log("ID# " + res[i].id + ": " + res[i].product_name + ", " + res[i].department_name + " Dept.  Price = $" + res[i].price + ".  Stock Qty = " + res[i].stock_quantity + ".");
@@ -36,21 +36,55 @@ function queryAllProducts() {
             .prompt([
                 {
                     name: "itemnumber",
-                    type: "input",
+                    type: "number",
                     message: "Enter ID# of item to purchase: "
                 },
                 {
                     name: "itemqty",
-                    type: "input",
+                    type: "number",
                     message: "Enter quantity to purchase: "
                 }
             ])
             .then(function (answer) {
+                if (isNaN(answer.itemnumber) || isNaN(answer.itemqty)) {
+                    console.log("\n" + "*** Please enter numbers only. ***" + "\n");
+                    queryAllProducts();
+                }
+                else if (answer.itemnumber < 0 || answer.itemnumber > res.length) {
+                    console.log("\n" + "*** Invalid ID# ***" + "\n");
+                    queryAllProducts();
+                }
+
+                else if (answer.itemqty == 0 || answer.itemqty < 0) {
+                    console.log("\n" + "*** Purchase quantity must be greater than 0. ***" + "\n");
+                    queryAllProducts();
+                }
+
+                else {
+                    // get the information of the chosen item
+                    var chosenItem;
+                    for (var j = 0; j < res.length; j++) {
+                        if (res[j].id === answer.itemnumber) {
+                            chosenItem = res[j];
+                        }
+                    }
+
+                    if (chosenItem.stock_quantity >= answer.itemqty) {
+                        console.log("we can do this!");
+                        
+                    }
+                    else {
+                        console.log("sorry, we don't have that many!");
+                    }
+
+                }
+
+
+
                 console.log("you entered ID# " + answer.itemnumber);
                 console.log("you want qty " + answer.itemqty);
-
             })
-    });
+});
 }
 
 function makePurchase() {
