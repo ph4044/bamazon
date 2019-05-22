@@ -16,29 +16,33 @@ The app is simple and self-explanatory.  Just follow the prompts.  CTRL-C to exi
 
 Screen shots showing execution of bamazoncustomer.js:
 
-1.  concert-this:
+1.  initial setup of SQL database:
 
-    ![Image of concert-this](images/concert-this.PNG)
+    ![Image of database in SQL Workbench](images/initial-database.PNG)
 
-2.  spotify-this:
+2.  initial products list:
 
-    ![Image of spotify-this-song](images/spotify-this-song.PNG)
+    ![Image of initial products list](images/initial-products-list.PNG)
 
-3.  spotify-this with no song:
+3.  successful purchase:
 
-    ![Image of spotify-this-song with no song entered](images/no-song.PNG)
+    ![Image of successful purchase](images/purchase-success.PNG)
 
-4.  movie-this:
+4.  purchase attempt with insufficient stock:
 
-    ![Image of movie-this](images/movie-this.PNG)
+    ![Image of purchase attempt with insufficient stock](images/purchase-insufficient-qty.PNG)
     
-5.  movie-this with no title:
+5.  purchase attempt with invalid product ID#:
 
-    ![Image of spotify-this-song with no movie entered](images/no-movie.PNG)
+    ![Image of purchase attempt with invalid product ID#](images/purchase-invalid-ID.PNG)
 
-6.  do-what-it-says:
+6.  purchase attempt with negative qty:
 
-    ![Image of do-what-it-says](images/movie-this.PNG)
+    ![Image of purchase attempt with negative qty](images/purchase-negative-qty.PNG)
+
+7.  purchase attempt with text entered:
+
+    ![Image of purchase attempt with text entered](images/purchase-NaNs.PNG)
 
 ## Author
 Philip Hu
