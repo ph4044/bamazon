@@ -18,13 +18,15 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     // console.log("connected as id " + connection.threadId);
-    console.log("\n" + "WELCOME TO BAMAZON!");
+    console.log("\n" + "WELCOME BAMAZON SHOPPER!");
+    console.log("CTRL-C to exit at any time."+"\n");
     queryAllProducts();
     // console.log("now on to the purchase");
     // makePurchase();
 });
 
 function queryAllProducts() {
+    // display all of the items available for sale. Include the ids, names, and prices of products for sale.
     console.log("Here's a list of available items..." + "\n");
     connection.query("SELECT * FROM products", function (err, res) {
         for (var i = 0; i < res.length; i++) {
@@ -32,14 +34,19 @@ function queryAllProducts() {
         }
         console.log("-----------------------------------");
 
+
+        // Prompt users with two messages:
+
         inquirer
             .prompt([
                 {
+                    // First, the ID of the product they would like to buy.
                     name: "itemnumber",
                     type: "number",
                     message: "Enter ID# of item to purchase: "
                 },
                 {
+                    // Second, how many units of the product they would like to buy.
                     name: "itemqty",
                     type: "number",
                     message: "Enter quantity to purchase: "
@@ -50,7 +57,7 @@ function queryAllProducts() {
                     console.log("\n" + "*** Please enter numbers only. ***" + "\n");
                     queryAllProducts();
                 }
-                else if (answer.itemnumber < 0 || answer.itemnumber > res.length) {
+                else if (answer.itemnumber <= 0 || answer.itemnumber > res.length) {
                     console.log("\n" + "*** Invalid ID# ***" + "\n");
                     queryAllProducts();
                 }
@@ -68,45 +75,49 @@ function queryAllProducts() {
                             chosenItem = res[j];
                         }
                     }
-
+                    // check if your store has enough of the product to meet the customer's request.
+                    // If so, fulfill the customer's order.
                     if (chosenItem.stock_quantity >= answer.itemqty) {
-                        console.log("we can do this!");
-                        
+                        console.log("Your purchase is approved!");
+                        // Update the SQL database to reflect the remaining quantity.
+                        connection.query(
+                            "UPDATE products SET ? WHERE ?",
+                            [
+                              {
+                                stock_quantity: chosenItem.stock_quantity - answer.itemqty
+                              },
+                              {
+                                id: chosenItem.id
+                              }
+                            ],
+                            function(error) {
+                              if (error) throw err;
+                              queryAllProducts();
+                            }
+                          );
+                        // Show the customer the total cost of their purchase.
+                        console.log("Your purchase total cost = $" + chosenItem.price * answer.itemqty+ "\n"+"Thank you!"+ "\n");
+
                     }
+                    // If not, inform the customer and show the list of items again.
                     else {
-                        console.log("sorry, we don't have that many!");
+                        console.log("\n" + "Sorry but we can't complete your order due to insufficient quantity on hand.  ID# " + answer.itemnumber + " Stock Qty = " + chosenItem.stock_quantity + "." + "\n");
+                        queryAllProducts();
                     }
 
                 }
 
 
 
-                console.log("you entered ID# " + answer.itemnumber);
-                console.log("you want qty " + answer.itemqty);
+                // console.log("you entered ID# " + answer.itemnumber);
+                // console.log("you want qty " + answer.itemqty);
             })
-});
+    });
 }
 
 function makePurchase() {
     console.log("this is from the purchase function");
 }
-
-// 5. Then create a Node application called `bamazonCustomer.js`. Running this application will first display all of the items 
-// available for sale. Include the ids, names, and prices of products for sale.
-
-// 6. The app should then prompt users with two messages.
-
-// * The first should ask them the ID of the product they would like to buy.
-
-// * The second message should ask how many units of the product they would like to buy.
-
-// 7. Once the customer has placed the order, your application should check if your store has enough of the product to meet
-//  the customer's request.
-
-// * If not, the app should log a phrase like `Insufficient quantity!`, and then prevent the order from going through.
-
-// 8. However, if your store _does_ have enough of the product, you should fulfill the customer's order.
-
 
 // * This means updating the SQL database to reflect the remaining quantity.
 // * Once the update goes through, show the customer the total cost of their purchase.

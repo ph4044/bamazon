@@ -51,4 +51,4 @@ INSERT INTO products (product_name, department_name, price, stock_quantity)
 VALUES ("Samsung Chromebook", "Electronics", 179.03, 10);
 
 INSERT INTO products (product_name, department_name, price, stock_quantity)
-VALUES ("Mixer", "Applicances", 199.00, 4);
+VALUES ("Mixer", "Appliances", 199.00, 4);
